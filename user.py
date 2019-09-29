@@ -2,6 +2,10 @@ from __future__ import annotations
 from pymongo import MongoClient
 from dataclasses import dataclass
 from typing import List, Optional
+import os
+
+MONGO_HOST = os.getenv("mongo_host")
+MONGO_PORT = os.getenv("mongo_port")
 
 
 @dataclass()
@@ -26,11 +30,8 @@ class UserModel:
 
 class UserService:
     def __init__(self):
-        self.model = None
-        self.not_found_exception = None
-        self.client = MongoClient('localhost', 27017)
-        self.db = self.client.averager
-        self.users = self.db.users
+        self.client = MongoClient(MONGO_HOST, MONGO_PORT)
+        self.users = self.client.averager.users
 
     def get_by_id(self, user_id: str) -> UserModel:
         return UserModel.from_mongo(self.users.find_one({"user_id": user_id}))
